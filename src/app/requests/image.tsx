@@ -58,7 +58,32 @@ export const fetchImages = (filters: string[] = []) => {
         } as ImageObject;
       });
       return result;
-    });
+    })
+    .catch((error) => console.error);
 
   return result;
+};
+
+export const uploadImage = async (formData: FormData) => {
+  const response = await fetch("http://localhost:8000/images/", {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${btoa(`${AUTH_USERNAME}:${AUTH_PASSWORD}`)}`,
+      "content-type": "multipart/form-data",
+    },
+    body: formData,
+  })
+  try {
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} - ${data}`);
+      
+      }
+    }
+    catch(error) {
+      console.error;
+    }
+
+  return response;
 };

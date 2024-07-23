@@ -9,6 +9,8 @@ import {
   List,
   ListItem,
   Typography,
+  Stack,
+  Grid,
 } from "@mui/joy";
 import React, { useState, useEffect } from "react";
 
@@ -24,7 +26,7 @@ const ImageItem: React.FC<ImageItemProps> = ({ currentImage }) => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: ".5rem",
+        paddingBottom: ".5rem",
       }}
     >
       <Card
@@ -33,49 +35,69 @@ const ImageItem: React.FC<ImageItemProps> = ({ currentImage }) => {
           width: "80vh",
           height: "70vh",
           boxShadow: "lg",
+          maxHeight: "100vh",
+          padding: ".5rem",
         }}
       >
-        <CardOverflow>
-          <AspectRatio ratio="4/3">
-            <img
-              src={currentImage?.url}
-              loading="lazy"
-              alt={currentImage?.label}
-            />
-          </AspectRatio>
-        </CardOverflow>
-        <CardContent
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            maxHeight: "20vh",
-          }}
-        >
-          <List
-            orientation="horizontal"
+        <Stack>
+          <Typography level="h4" margin={".5rem"}>
+            {currentImage.label}
+          </Typography>
+          <CardOverflow
             sx={{
-              display: "flex",
-              alignItems: "center",
-              flexWrap: "wrap",
+              margin: ".5rem",
             }}
           >
-            {currentImage?.detectedObjects?.length ?? 0 > 10
-              ? currentImage?.detectedObjects
-                  ?.slice(0, 10)
-                  .map((object, key) => (
+            <AspectRatio ratio="4/3">
+              <img
+                src={currentImage?.url}
+                loading="lazy"
+                alt={currentImage?.label}
+              />
+            </AspectRatio>
+          </CardOverflow>
+          <CardContent
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              maxHeight: "20vh",
+              // padding: ".2rem",
+              // margin: ".2rem",
+            }}
+          >
+            <List
+              orientation="horizontal"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "wrap",
+                flexGrow: 100,
+              }}
+            >
+              {currentImage?.detectedObjects ? (
+                currentImage?.detectedObjects?.length ?? 0 > 10 ? (
+                  currentImage?.detectedObjects
+                    ?.slice(0, 10)
+                    .map((object, key) => (
+                      <ListItem key={key}>
+                        <Chip color="primary">{object}</Chip>
+                      </ListItem>
+                    ))
+                ) : (
+                  (currentImage?.detectedObjects ?? []).map((object, key) => (
                     <ListItem key={key}>
                       <Chip color="primary">{object}</Chip>
                     </ListItem>
                   ))
-              : (currentImage?.detectedObjects ?? []).map((object, key) => (
-                  <ListItem key={key}>
-                    <Chip color="primary">{object}</Chip>
-                  </ListItem>
-                ))}
-            {/* <Typography>Show more...</Typography> */}
-          </List>
-        </CardContent>
+                )
+              ) : (
+                <Typography variant="soft">No detected objects</Typography>
+              )}
+              {/* <Typography>Show more...</Typography> */}
+            </List>
+          </CardContent>
+        </Stack>
       </Card>
     </Box>
   );

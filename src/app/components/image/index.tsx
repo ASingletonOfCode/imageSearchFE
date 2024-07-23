@@ -14,8 +14,6 @@ const Images: React.FC = () => {
     });
   }, []);
 
-  const uploadImage = () => {};
-
   return (
     <div className="flex-col">
       <Button
@@ -40,7 +38,7 @@ const Images: React.FC = () => {
             return <ImageItem key={image?.id} currentImage={image} />;
           })
         ) : (
-          <UploadImageDialog />
+          <UploadImageDialog setOpen={setOpen} />
         )}
       </Box>
     </div>

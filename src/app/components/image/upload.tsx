@@ -1,3 +1,4 @@
+import { uploadImage } from "@/app/requests/image";
 import {
   Button,
   Card,
@@ -14,13 +15,16 @@ import {
   Box,
   AspectRatio,
 } from "@mui/joy";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 
-const UploadImageDialog: React.FC = () => {
-  const [upload, setUpload] = useState({});
-  const [url, setUrl] = useState("");
+interface UploadImageDialogProps {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const UploadImageDialog: React.FC<UploadImageDialogProps> = ({ setOpen }) => {
   const [sourceSelect, setSourceSelect] = useState<string | null>("file");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSourceSelect = (
     event: React.SyntheticEvent | null,
@@ -45,6 +49,26 @@ const UploadImageDialog: React.FC = () => {
     setImagePreview(event.target.value);
   };
 
+  const handleSubmit = async (event: FormEvent<HTMLFormElement> | null) => {
+    setError(null);
+    event?.preventDefault();
+    const formData = new FormData(event?.currentTarget as HTMLFormElement);
+    formData.append(
+      "source_type",
+      formData.get("source_type") == "url"
+        ? "URL"
+        : formData.get("source_type") == "upload"
+        ? "UPLOAD"
+        : ""
+    );
+    const result = await uploadImage(formData);
+    if (result.status == 200) {
+      setOpen(false);
+    } else {
+      setError(`Error uploading image!`);
+    }
+  };
+
   return (
     <Card
       variant="outlined"
@@ -62,56 +86,76 @@ const UploadImageDialog: React.FC = () => {
             {imagePreview && <img src={imagePreview} alt="Selected Image" />}
           </AspectRatio>
         </Box>
-        <CardActions
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Typography level="h4">Select an image to upload</Typography>
-          <Checkbox label="Detect Objects?" />
-          <Box sx={{ display: "flex", flexDirection: "row" }}>
-            <FormControl
-              sx={{
-                padding: "0 1rem 0 0 ",
-              }}
-            >
-              <FormLabel sx={{ display: "flex", flexDirection: "column" }}>
-                Image Label:
-              </FormLabel>
-              <Input type="text" placeholder="Enter a label for your image" />
-              <FormHelperText>Give it a good name to refer to</FormHelperText>
-            </FormControl>
-            <FormControl
-              sx={{
-                padding: "0 1rem 0 0 ",
-              }}
-            >
-              <FormLabel>Choose a source type:</FormLabel>
-              <Select defaultValue="file" onChange={handleSourceSelect}>
-                <Option value="file">File</Option>
-                <Option value="url">URL</Option>
-              </Select>
-            </FormControl>
-            <FormControl
-              sx={{
-                padding: "0 1rem 0 0 ",
-              }}
-            >
-              <FormLabel>Image:</FormLabel>
-              {sourceSelect == "file" ? (
-                <Input type="file" onChange={handleFileChange} />
-              ) : (
+        <form onSubmit={(event) => handleSubmit(event)}>
+          <CardActions
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <Typography level="h4">Select an image to upload</Typography>
+            <Checkbox label="Detect Objects?" name="detect_objects" />
+            <Box sx={{ display: "flex", flexDirection: "row" }}>
+              <FormControl
+                sx={{
+                  padding: "0 1rem 0 0 ",
+                }}
+              >
+                <FormLabel sx={{ display: "flex", flexDirection: "column" }}>
+                  Image Label:
+                </FormLabel>
                 <Input
+                  name="label"
                   type="text"
-                  placeholder="URL"
-                  onChange={handleUrlChange}
+                  placeholder="Enter a label for your image"
                 />
-              )}
+                <FormHelperText>Give it a good name to refer to</FormHelperText>
+              </FormControl>
+              <FormControl
+                sx={{
+                  padding: "0 1rem 0 0 ",
+                }}
+              >
+                <FormLabel>Choose a source type:</FormLabel>
+                <Select
+                  name="source_type"
+                  defaultValue="upload"
+                  onChange={handleSourceSelect}
+                >
+                  <Option value="upload">File</Option>
+                  <Option value="url">URL</Option>
+                </Select>
+              </FormControl>
+              <FormControl
+                sx={{
+                  padding: "0 1rem 0 0 ",
+                }}
+              >
+                <FormLabel>Image:</FormLabel>
+                {sourceSelect == "file" ? (
+                  <Input
+                    name="source"
+                    type="file"
+                    onChange={handleFileChange}
+                  />
+                ) : (
+                  <Input
+                    name="source_url"
+                    type="text"
+                    placeholder="URL"
+                    onChange={handleUrlChange}
+                  />
+                )}
+              </FormControl>
+            </Box>
+            <FormControl>
+              <Button size="sm" type="submit">
+                Upload
+              </Button>
+              {error && <FormHelperText>{error}</FormHelperText>}
             </FormControl>
-          </Box>
-          <Button size="sm">Upload</Button>
-        </CardActions>
+          </CardActions>
+        </form>
       </CardContent>
     </Card>
   );
