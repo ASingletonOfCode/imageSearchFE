@@ -1,3 +1,5 @@
+This is a React (node) frontend app for the Image Search API (https://github.com/ASingletonOfCode/imageSearch). It has some very basic features of viewing images and uploading them.
+
 ## Local Setup
 
 0. You will need NVM to install Node (v20+) and NPM https://nodejs.org/en/download/package-manager:
