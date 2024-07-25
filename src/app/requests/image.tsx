@@ -69,21 +69,18 @@ export const uploadImage = async (formData: FormData) => {
     method: "POST",
     headers: {
       Authorization: `Basic ${btoa(`${AUTH_USERNAME}:${AUTH_PASSWORD}`)}`,
-      "content-type": "multipart/form-data",
     },
     body: formData,
-  })
+  });
   try {
-      const data = await response.json();
+    const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} - ${data}`);
-      
-      }
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} - ${data}`);
     }
-    catch(error) {
-      console.error;
-    }
+  } catch (error) {
+    console.error;
+  }
 
   return response;
 };
