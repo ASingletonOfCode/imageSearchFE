@@ -1,4 +1,4 @@
-import { uploadImage } from "@/app/requests/image";
+import { fetchImages, ImageObject, uploadImage } from "@/app/requests/image";
 import {
   Button,
   Card,
@@ -19,9 +19,13 @@ import { FormEvent, useState } from "react";
 
 interface UploadImageDialogProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setImages: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
-const UploadImageDialog: React.FC<UploadImageDialogProps> = ({ setOpen }) => {
+const UploadImageDialog: React.FC<UploadImageDialogProps> = ({
+  setOpen,
+  setImages,
+}) => {
   const [sourceSelect, setSourceSelect] = useState<string | null>("file");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -62,8 +66,12 @@ const UploadImageDialog: React.FC<UploadImageDialogProps> = ({ setOpen }) => {
         : ""
     );
     const result = await uploadImage(formData);
+
     if (result.ok) {
       setOpen(false);
+      fetchImages().then((result) => {
+        setImages(result as ImageObject[]);
+      });
     } else {
       setError(`Error uploading image!`);
     }

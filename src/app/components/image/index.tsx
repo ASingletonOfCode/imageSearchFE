@@ -34,11 +34,11 @@ const Images: React.FC = () => {
         }}
       >
         {!open ? (
-          images.map((image) => {
+          images?.map((image) => {
             return <ImageItem key={image?.id} currentImage={image} />;
           })
         ) : (
-          <UploadImageDialog setOpen={setOpen} />
+          <UploadImageDialog setOpen={setOpen} setImages={setImages} />
         )}
       </Box>
     </div>
