@@ -62,7 +62,7 @@ const UploadImageDialog: React.FC<UploadImageDialogProps> = ({ setOpen }) => {
         : ""
     );
     const result = await uploadImage(formData);
-    if (result.status == 200) {
+    if (result.ok) {
       setOpen(false);
     } else {
       setError(`Error uploading image!`);
