@@ -24,10 +24,20 @@ npm -v # should print `10.8.1`
 npm install
 ```
 
+2. Update your user name and password for the [requests](./src/app/requests/image.tsx) to the backend:
+
+```
+# src/app/requests/image.tsx
+const AUTH_USERNAME = "{YOUR DJANGO ADMIN USERNAME}";
+const AUTH_PASSWORD = "{YOUR DJANGO ADMIN PASSWORD}";
+```
+
 2. Run the frontend app:
 
 ```
+
 npm run dev
+
 ```
 
 3. Navigate to `http://localhost:3000`

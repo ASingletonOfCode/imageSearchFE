@@ -1,5 +1,5 @@
-const AUTH_USERNAME = "david";
-const AUTH_PASSWORD = "password";
+const AUTH_USERNAME = "{YOUR DJANGO ADMIN USERNAME}";
+const AUTH_PASSWORD = "{YOUR DJANGO ADMIN PASSWORD}";
 
 export interface ImageObject {
   id: number;
